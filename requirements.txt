@@ -11,3 +11,6 @@ Flask-Cors==3.0.2
 redis==2.7.6
 msgpack-python==0.1.12
 python-dateutil==2.1
+gunicorn
+bugsnag
+blinker
