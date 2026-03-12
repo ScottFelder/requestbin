@@ -27,6 +27,13 @@ def bins():
 
 @app.endpoint("api.bin")
 def bin(name):
+    if request.method == "DELETE":
+        try:
+            db.delete_bin(name)
+        except KeyError:
+            return _response({"error": "Bin not found"}, 404)
+        return _response({"deleted": True, "name": name}, 200)
+
     try:
         bin = db.lookup_bin(name)
     except KeyError:

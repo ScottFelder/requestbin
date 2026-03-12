@@ -33,3 +33,6 @@ def count_requests():
 
 def avg_req_size():
     return db.avg_req_size()
+
+def delete_bin(name):
+    return db.delete_bin(name)

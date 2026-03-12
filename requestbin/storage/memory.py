@@ -44,3 +44,9 @@ class MemoryStorage(object):
 
     def lookup_bin(self, name):
         return self.bins[name]
+
+    def delete_bin(self, name):
+        bin = self.bins.pop(name)
+        # Adjust request_count for stats; clamp at zero to avoid negatives.
+        self.request_count = max(0, self.request_count - len(bin.requests))
+        return bin
