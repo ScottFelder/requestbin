@@ -50,7 +50,7 @@
           <ul id="recent">
             {% for bin in recent %}
             <li>
-              <a href="/{{bin.name}}?inspect"><i class="icon-circle" style="color: rgb{{bin.color}}"></i></a>
+              <a href="/{{bin.name}}?inspect"><i class="icon-circle" style="color: rgb({{bin.color[0]}}, {{bin.color[1]}}, {{bin.color[2]}})"></i></a>
               <a href="/{{bin.name}}?inspect">{{bin.name}}</a> {% if bin.private %}<i class="icon-lock"></i>{% endif %}
               ({{bin.request_count}})
 

@@ -5,7 +5,7 @@
 {% block sidebar %}{% endblock %}
 
 {% block binurl %}
-  <a href="/{{bin.name}}?inspect"><i class="icon-circle icon-2x" style="color: rgb{{bin.color}}"></i></a>
+  <a href="/{{bin.name}}?inspect"><i class="icon-circle icon-2x" style="color: rgb({{bin.color[0]}}, {{bin.color[1]}}, {{bin.color[2]}})"></i></a>
   <input type="text" value="{{base_url}}/{{bin.name}}" onclick="this.select()" />
   {% if bin.private %}<i class="icon-lock"></i>{% endif %}
 {% endblock %}
