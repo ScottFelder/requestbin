@@ -1,13 +1,14 @@
-app:
+services:
+  app:
     build: .
     environment:
-        REALM: prod
-        REDIS_URL: "//redis:6379"
-    links:
-        - redis
+      REALM: prod
+      REDIS_URL: "//redis:6379"
+    depends_on:
+      - redis
     restart: always
     ports:
-        - "8000:8000"
+      - "8000:8000"
 
-redis:
-    image: redis
+  redis:
+    image: redis:7
