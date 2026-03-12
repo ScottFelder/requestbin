@@ -13,37 +13,42 @@ from .util import solid16x16gif_datauri
 
 from requestbin import config
 
+
 class Bin(object):
     max_requests = config.MAX_REQUESTS
 
-    def __init__(self, private=False):
+    def __init__(self, private=False, custom_name=None):
         self.created = time.time()
         self.private = private
         self.color = random_color()
-        self.name = tinyid(8)
+        if custom_name is None:
+            self.name = tinyid(8)
+        else:
+            self.name = custom_name
         self.favicon_uri = solid16x16gif_datauri(*self.color)
         self.requests = []
         self.secret_key = os.urandom(24) if self.private else None
 
     def json(self):
         return json.dumps(self.to_dict())
-    
+
     def to_dict(self):
         return dict(
-            private=self.private, 
-            color=self.color, 
+            private=self.private,
+            color=self.color,
             name=self.name,
-            request_count=self.request_count)
+            request_count=self.request_count,
+        )
 
     def dump(self):
         o = copy.copy(self.__dict__)
-        o['requests'] = [r.dump() for r in self.requests]
-        return msgpack.dumps(o)
+        o["requests"] = [r.dump() for r in self.requests]
+        return msgpack.packb(o, use_bin_type=True)
 
     @staticmethod
     def load(data):
-        o = msgpack.loads(data)
-        o['requests'] = [Request.load(r) for r in o['requests']]
+        o = msgpack.unpackb(data, raw=False)
+        o["requests"] = [Request.load(r) for r in o["requests"]]
         b = Bin()
         b.__dict__ = o
         return b
@@ -55,19 +60,22 @@ class Bin(object):
     def add(self, request):
         self.requests.insert(0, Request(request))
         if len(self.requests) > self.max_requests:
-            for _ in xrange(self.max_requests, len(self.requests)):
+            for _ in range(self.max_requests, len(self.requests)):
                 self.requests.pop(self.max_requests)
 
 
 class Request(object):
     ignore_headers = config.IGNORE_HEADERS
-    max_raw_size = config.MAX_RAW_SIZE 
+    max_raw_size = config.MAX_RAW_SIZE
 
     def __init__(self, input=None):
         if input:
             self.id = tinyid(6)
+            self.url = input.url
             self.time = time.time()
-            self.remote_addr = input.headers.get('X-Forwarded-For', input.remote_addr)
+            self.remote_addr = input.headers.get(
+                "X-Forwarded-For", input.remote_addr
+            )
             self.method = input.method
             self.headers = dict(input.headers)
 
@@ -84,19 +92,29 @@ class Request(object):
             self.path = input.path
             self.content_type = self.headers.get("Content-Type", "")
 
-            self.raw = input.environ.get('raw')
-            self.content_length = len(self.raw)
+            self.raw = self._as_string(input.environ.get("raw"))
+            self.content_length = len(self.raw) if self.raw is not None else 0
 
             # for header in self.ignore_headers:
-            #     self.raw = re.sub(r'{}: [^\n]+\n'.format(header), 
+            #     self.raw = re.sub(r'{}: [^\n]+\n'.format(header),
             #                         '', self.raw, flags=re.IGNORECASE)
             if self.raw and len(self.raw) > self.max_raw_size:
-                self.raw = self.raw[0:self.max_raw_size]
+                self.raw = self.raw[0 : self.max_raw_size]
 
+    def _as_string(self, value):
+        if value is None:
+            return None
+        if isinstance(value, str):
+            return value
+        try:
+            return value.decode("utf-8")
+        except (AttributeError, UnicodeDecodeError):
+            return "".join(chr(x) for x in value)
 
     def to_dict(self):
         return dict(
             id=self.id,
+            url=getattr(self, "url", None),
             time=self.time,
             remote_addr=self.remote_addr,
             method=self.method,
@@ -111,20 +129,32 @@ class Request(object):
         )
 
     @property
+    def to_curl(self):
+        curl_command = f"curl -X {self.method} '{self.url}'"
+        curl_headers = "\\\n".join(
+            [
+                f"  -H '{header}: {value}'"
+                for header, value in self.headers.items()
+                if header.lower() not in ["host", "content-length"]
+            ]
+        )
+        if curl_headers:
+            curl_command += f"\\\n{curl_headers}"
+        if self.raw:
+            curl_command += f"\\\n  -d '{self.raw}'"
+        return curl_command
+
+    @property
     def created(self):
         return datetime.datetime.fromtimestamp(self.time)
 
     def dump(self):
-        return msgpack.dumps(self.__dict__)
+        return msgpack.packb(self.__dict__, use_bin_type=True)
 
     @staticmethod
     def load(data):
         r = Request()
-        try:
-            r.__dict__ = msgpack.loads(data, encoding="utf-8")
-        except (UnicodeDecodeError):
-            r.__dict__ = msgpack.loads(data, encoding="ISO-8859-1")
-
+        r.__dict__ = msgpack.unpackb(data, raw=False)
         return r
 
     # def __iter__(self):

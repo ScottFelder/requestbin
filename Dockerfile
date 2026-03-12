@@ -1,28 +1,20 @@
-FROM python:2.7-alpine
+FROM python:3.12-slim
 
-RUN apk update && apk upgrade && \
-    apk add \
-        gcc python python-dev py-pip \
-        # greenlet
-        musl-dev \
-        # sys/queue.h
-        bsd-compat-headers \
-        # event.h
+WORKDIR /opt/requestbin
+
+# System build/runtime dependencies for gevent and related packages
+RUN apt-get update && apt-get install -y --no-install-recommends \
+        build-essential \
         libevent-dev \
-    && rm -rf /var/cache/apk/*
+    && rm -rf /var/lib/apt/lists/*
 
-# want all dependencies first so that if it's just a code change, don't have to
-# rebuild as much of the container
-ADD requirements.txt /opt/requestbin/
-RUN pip install -r /opt/requestbin/requirements.txt \
-    && rm -rf ~/.pip/cache
+# Install Python dependencies first for better layer caching
+COPY requirements.txt /opt/requestbin/
+RUN pip install --no-cache-dir -r requirements.txt
 
-# the code
-ADD requestbin  /opt/requestbin/requestbin/
+# Application code
+COPY requestbin /opt/requestbin/requestbin/
 
 EXPOSE 8000
 
-WORKDIR /opt/requestbin
-CMD gunicorn -b 0.0.0.0:8000 --worker-class gevent --workers 2 --max-requests 1000 requestbin:app
-
-
+CMD ["gunicorn", "-b", "0.0.0.0:8000", "--worker-class", "gevent", "--workers", "2", "--max-requests", "1000", "requestbin:app"]
