@@ -50,7 +50,7 @@
           <ul id="recent">
             {% for bin in recent %}
             <li>
-              <a href="/{{bin.name}}?inspect"><i class="icon-circle" style="color: rgb{{bin.color}}"></i></a>
+              <a href="/{{bin.name}}?inspect"><i class="icon-circle" style="color: rgb({{bin.color[0]}}, {{bin.color[1]}}, {{bin.color[2]}})"></i></a>
               <a href="/{{bin.name}}?inspect">{{bin.name}}</a> {% if bin.private %}<i class="icon-lock"></i>{% endif %}
               ({{bin.request_count}})
 
@@ -70,7 +70,7 @@
         <footer class="row-fluid">
             <div class="span12">
 
-                <p class="copyright">RequestBin originally created by <a href="http://progrium.com">Jeff Lindsay</a>.</p>
+                <p class="copyright">RequestBin</p>
             </div>
         </footer>
     </div>

@@ -63,3 +63,26 @@ class RedisStorage(object):
         except TypeError:
             self.redis.delete(key)  # clear bad data
             raise KeyError("Bin not found")
+
+    def delete_bin(self, name):
+        key = self._key(name)
+        serialized_bin = self.redis.get(key)
+        if serialized_bin is None:
+            raise KeyError("Bin not found")
+
+        # Optionally keep request_count stats roughly accurate.
+        try:
+            bin = Bin.load(serialized_bin)
+            req_count = len(bin.requests)
+        except Exception:
+            req_count = 0
+
+        if req_count:
+            count_key = self._request_count_key()
+            if self.redis.exists(count_key):
+                # Decrement but do not allow it to go below zero.
+                current = int(self.redis.get(count_key) or 0)
+                new_value = max(0, current - req_count)
+                self.redis.set(count_key, new_value)
+
+        self.redis.delete(key)

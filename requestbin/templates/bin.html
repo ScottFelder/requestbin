@@ -5,12 +5,29 @@
 {% block sidebar %}{% endblock %}
 
 {% block binurl %}
-  <a href="/{{bin.name}}?inspect"><i class="icon-circle icon-2x" style="color: rgb{{bin.color}}"></i></a>
+  <a href="/{{bin.name}}?inspect"><i class="icon-circle icon-2x" style="color: rgb({{bin.color[0]}}, {{bin.color[1]}}, {{bin.color[2]}})"></i></a>
   <input type="text" value="{{base_url}}/{{bin.name}}" onclick="this.select()" />
   {% if bin.private %}<i class="icon-lock"></i>{% endif %}
 {% endblock %}
 
 {% block head %}
+<script type="text/javascript">
+  function deleteBin(name) {
+    if (!confirm("Are you sure you want to delete this bin? This cannot be undone.")) {
+      return;
+    }
+    $.ajax({
+      url: '/api/v1/bins/' + name,
+      type: 'DELETE',
+      success: function(data) {
+        window.location.href = '/';
+      },
+      error: function(xhr) {
+        alert('Error deleting bin: ' + (xhr.responseText || xhr.statusText));
+      }
+    });
+  }
+</script>
 {% endblock %}
 
 {% block content %}
@@ -44,12 +61,18 @@
 
       <h4 class="text-center">Bin URL</h4>
       <h2 class="text-center">
-        <input class="xxlarge input-xxlarge" type="text" value="{{base_url}}/{{bin.name}}" onclick="this.select()" style="border-color: rgb{{bin.color}}; border-width: 3px;" /></h2>
+        <input class="xxlarge input-xxlarge" type="text" value="{{base_url}}/{{bin.name}}" onclick="this.select()" style="border-color: rgb({{bin.color[0]}}, {{bin.color[1]}}, {{bin.color[2]}}); border-width: 3px;" /></h2>
       <p class="text-center">{% if bin.private %}This is a private bin. Requests are only viewable from this computer.{% endif %}
 
       <hr>
       <div class="row-fluid">
         <div class="span6 offset3">
+
+      <p class="text-center">
+        <a class="btn btn-danger" onclick="deleteBin('{{ bin.name }}')">
+          <i class="icon-trash"></i> Delete this bin
+        </a>
+      </p>
 
       <h4>Make a request to get started.</h4>
 
