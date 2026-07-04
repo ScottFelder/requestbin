@@ -27,6 +27,83 @@
       }
     });
   }
+
+  function formatXml(xml) {
+    var parser = new DOMParser();
+    var doc = parser.parseFromString(xml.trim(), 'application/xml');
+    if (doc.querySelector('parsererror')) throw new Error('Invalid XML');
+    return serializeXmlNode(doc.documentElement, 0);
+  }
+
+  function serializeXmlNode(node, depth) {
+    var pad = '  '.repeat(depth);
+    if (node.nodeType === Node.TEXT_NODE) {
+      var t = node.textContent.trim();
+      return t ? pad + t + '\n' : '';
+    }
+    if (node.nodeType !== Node.ELEMENT_NODE) return '';
+    var attrs = '';
+    for (var i = 0; i < node.attributes.length; i++) {
+      var a = node.attributes[i];
+      attrs += ' ' + a.name + '="' + a.value + '"';
+    }
+    var hasElementChild = false;
+    for (var i = 0; i < node.childNodes.length; i++) {
+      if (node.childNodes[i].nodeType === Node.ELEMENT_NODE) { hasElementChild = true; break; }
+    }
+    if (!node.hasChildNodes()) return pad + '<' + node.tagName + attrs + '/>\n';
+    if (!hasElementChild) {
+      return pad + '<' + node.tagName + attrs + '>' + node.textContent.trim() + '</' + node.tagName + '>\n';
+    }
+    var out = pad + '<' + node.tagName + attrs + '>\n';
+    for (var i = 0; i < node.childNodes.length; i++) out += serializeXmlNode(node.childNodes[i], depth + 1);
+    return out + pad + '</' + node.tagName + '>\n';
+  }
+
+  function syntaxHighlightJson(value) {
+    var json = JSON.stringify(value, null, 2);
+    json = json.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    return json.replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g, function(match) {
+      var cls = 'lit';
+      if (/^"/.test(match)) {
+        cls = /:$/.test(match) ? 'atn' : 'str';
+      } else if (/true|false/.test(match)) {
+        cls = 'kwd';
+      } else if (/null/.test(match)) {
+        cls = 'kwd';
+      }
+      return '<span class="' + cls + '">' + match + '</span>';
+    });
+  }
+
+  $(document).ready(function() {
+    $('.body').each(function() {
+      $(this).data('rawHtml', $(this).html());
+      $(this).data('rawText', $(this).text());
+    });
+
+    $(document).on('change', '.body-format-select', function() {
+      var requestId = $(this).data('request-id');
+      var format = $(this).val();
+      var pre = $('#request-detail-' + requestId + ' .body');
+
+      if (format === 'raw') {
+        pre.html(pre.data('rawHtml'));
+      } else if (format === 'json') {
+        try {
+          pre.html(syntaxHighlightJson(JSON.parse(pre.data('rawText'))));
+        } catch(e) {
+          pre.text('Could not parse as JSON: ' + e.message);
+        }
+      } else if (format === 'xml') {
+        try {
+          pre.text(formatXml(pre.data('rawText')));
+        } catch(e) {
+          pre.text('Could not parse as XML: ' + e.message);
+        }
+      }
+    });
+  });
 </script>
 {% endblock %}
 
@@ -213,10 +290,17 @@ public class RequestBinTutorial {
       </div>
     </div>
 
-    <h5>RAW BODY</h5>
+    <div style="display:flex; align-items:baseline; gap:8px; margin-bottom:4px;">
+      <h5 style="margin:0;">BODY</h5>
+      <select class="body-format-select" data-request-id="{{ request.id }}">
+        <option value="raw">Raw</option>
+        <option value="json">JSON</option>
+        <option value="xml">XML</option>
+      </select>
+    </div>
     <div class="request-body" data-id="{{ request.id }}">
 <pre class="body prettyprint">{%if request.raw%}{{request.raw}}{%else%}<em>None</em>{%endif%}</pre>
-
+<pre class="body-formatted" style="display:none;"></pre>
   </div>
 </div>
 {% endmacro %}
