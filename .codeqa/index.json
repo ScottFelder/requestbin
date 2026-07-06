@@ -1,0 +1,482 @@
+{
+  "files": {
+    "README.md": {
+      "hash": "0db9f3c9c51eca61b0f7d4ad9bb6d198fb764c7650dd1c0f56e4c5c94784c145",
+      "lines": 60,
+      "size": 1550,
+      "summary": "RequestBin is a self-hosted HTTP request inspection tool that was discontinued as a public service due to abuse. The README provides deployment instructions for running private instances via Heroku (using Redis) or Docker (using docker-compose), originally created by Jeff Lindsay and maintained by Runscope contributors. Users can clone the repository and deploy their own instance following the step-by-step setup guides provided for either platform."
+    },
+    "app.json": {
+      "hash": "a7f10357bb619b12d8b7997220982289930d36c75c9c3dd06049a79d11caae61",
+      "lines": 18,
+      "size": 414,
+      "summary": "This is the Heroku app configuration file for RequestBin, a web service that allows users to inspect HTTP requests and debug webhooks. It defines the application metadata including name, description, website, and repository links, along with deployment settings for Heroku. The configuration specifies a Redis addon dependency and sets the REALM environment variable to \"prod\" for production deployment."
+    },
+    "docker-compose.yml": {
+      "hash": "a98869eee0e527efecdaed36988c73081c84da00ca5f9bf24f715065fd2b98ff",
+      "lines": 15,
+      "size": 207,
+      "summary": "This Docker Compose configuration defines a multi-container application setup with two services: an `app` service built from the project's Dockerfile that runs on port 8000 with production environment settings, and a `redis` service providing an in-memory data store at version 7. The app depends on Redis for caching/session management and both services are configured to restart automatically. This is a typical microservices deployment stack for a web application requiring both an application server and a Redis cache layer."
+    },
+    "requestbin/__init__.py": {
+      "hash": "f583c54472da49640ae7419b2e74ead3d6893295ac63a6b23e475de57361f42a",
+      "lines": 85,
+      "size": 2820,
+      "summary": "This file initializes the RequestBin Flask application, setting up core infrastructure including CORS support, raw request body capture via the `WSGIRawBody` middleware, and Bugsnag error tracking when configured. It registers Jinja2 template filters (status_class, friendly_time, friendly_size, etc.) and defines all application routes for both the web interface (home, bin viewing/posting) and REST API endpoints (v1 bins and requests management). The app is configured from environment variables and a config module, with optional features like CORS and error reporting enabled based on configuration settings."
+    },
+    "requestbin/api.py": {
+      "hash": "8f60c97135fa4f0f420b8eb8ff0a6dcd7f65a438f1bf444d8ed7fae57511bc25",
+      "lines": 72,
+      "size": 1812,
+      "summary": "This module provides Flask API endpoints for RequestBin, a service that captures and inspects HTTP requests. It implements handlers for creating bins (endpoints.bins), retrieving bin details (bin), listing requests in a bin (requests), fetching individual requests (request_), and retrieving system statistics (stats), all returning JSON responses with JSONP support via the _response helper function. The module integrates with the app's database layer (db) to manage bins and requests, and uses Flask sessions to maintain private bin credentials."
+    },
+    "requestbin/config.py": {
+      "hash": "62547ace20fd604cec863a8124d5b65ad92b7c02281c424361042592198d031f",
+      "lines": 61,
+      "size": 1436,
+      "summary": "This file defines the configuration settings for RequestBin, a request inspection service, with environment-aware defaults for local development and production deployments. It configures core application parameters including debug mode, server port, storage backend selection (memory vs Redis), session security, request limits, and optional integrations like CORS and Bugsnag error tracking. The configuration automatically switches between in-memory storage for local testing and Redis-backed persistence for production, while also managing Redis connection details and filtering sensitive headers in production environments."
+    },
+    "requestbin/db.py": {
+      "hash": "77f5da3bc0f79916c2fb9e0ab6102b32d3d8ad3e9ab3c8687a1f63d88147e85e",
+      "lines": 36,
+      "size": 820,
+      "summary": "This module provides a storage abstraction layer for RequestBin by dynamically loading a configurable storage backend class and exposing wrapper functions for bin and request management. It defines functions like `create_bin()`, `create_request()`, `lookup_bin()`, and various statistics methods that delegate to the underlying storage backend instance. The module enables RequestBin to support different storage implementations (Redis, databases, etc.) by loading the backend class specified in the configuration at runtime."
+    },
+    "requestbin/filters.py": {
+      "hash": "da91420306b5d32ab0800115b859f427ba62cf49f5c9212845f7057fba7bb066",
+      "lines": 125,
+      "size": 2654,
+      "summary": "This module provides template filter functions for formatting and displaying request/response data in the RequestBin web interface. It includes functions like `approximate_time`, `friendly_size`, `friendly_time`, `status_class`, and `time_class` that convert raw metrics (timestamps, byte counts, HTTP status codes, response times) into human-readable displays suitable for web templates. The filters handle type validation and edge cases to ensure robust rendering of request inspection data throughout the application."
+    },
+    "requestbin/models.py": {
+      "hash": "9d5a98dae4eb02abe9d2553b3257a2e955f1a466639d138d698fe00607be21d6",
+      "lines": 189,
+      "size": 5702,
+      "summary": "This module defines the core data models for RequestBin, a HTTP request inspection service. The `Bin` class represents a unique collection endpoint that captures incoming HTTP requests, storing metadata like creation time, privacy settings, and a list of `Request` objects, with serialization via msgpack. The `Request` class captures detailed information about individual HTTP requests including headers, method, body, query parameters, and provides utilities like curl command generation and request counting. Together, these models handle storage, retrieval, and serialization of HTTP request data with configurable limits on request history and raw request size."
+    },
+    "requestbin/static/css/bootstrap-responsive.css": {
+      "hash": "5827a94a01fee9bb5b3331b00efbb083275fca57a4403b8ec56658df034be1c3",
+      "lines": 1110,
+      "size": 22111,
+      "summary": "This is the responsive design CSS stylesheet from Bootstrap v2.3.2 that provides media query rules and responsive grid classes for adapting layouts across different device sizes. It defines utility classes like `.visible-phone`, `.visible-tablet`, `.visible-desktop`, and `.hidden-print` for showing/hiding content based on viewport width, along with fluid grid system classes (`.row-fluid`, `.span1`-`.span12`, `.offset1`-`.offset12`) that scale proportionally on large screens. The stylesheet is a foundational dependency for RequestBin's responsive UI, ensuring the web interface displays correctly on desktops, tablets, and mobile devices."
+    },
+    "requestbin/static/css/bootstrap-responsive.min.css": {
+      "hash": "948149bd7d046c4a606e185ad68acdad7695d532a781f556ac86f081c1e5f341",
+      "lines": 10,
+      "size": 16849,
+      "summary": "This is a minified responsive CSS stylesheet from Bootstrap v2.3.2 that provides media query-based layout rules and utility classes for multi-device responsive design. It defines grid systems (span1-span12, offset classes), responsive visibility utilities (visible-phone, visible-tablet, visible-desktop), and fluid layout containers that adapt to different viewport sizes (large desktop 1200px+, tablet 768-979px, and mobile under 767px). The file serves as the responsive design foundation for the RequestBin web interface, enabling the application to display properly across desktop, tablet, and mobile devices."
+    },
+    "requestbin/static/css/bootstrap.css": {
+      "hash": "b21bc63a4013059080b7e9b8cb495c822a5d27f7eb9ca86b72daead87cae97ed",
+      "lines": 5264,
+      "size": 125788,
+      "summary": "This file is Bootstrap v2.3.2, a foundational CSS framework that provides default styling and responsive grid layout utilities for the RequestBin application. It includes utility classes like `.clearfix`, `.hide-text`, `.input-block-level`, and a 12-column grid system with `.span` and `.offset` classes for responsive layout, along with normalized styles for HTML elements, form controls, and print media. The framework serves as the visual foundation for RequestBin's user interface, enabling consistent styling and responsive design across different screen sizes."
+    },
+    "requestbin/static/css/bootstrap.min.css": {
+      "hash": "186c40d06fc13830497a7b9f42bc14538c1b7fa0b98560c7911e6e1a935f769d",
+      "lines": 10,
+      "size": 106015,
+      "summary": "This is the minified Bootstrap v2.3.2 CSS framework that provides the foundational styling and responsive grid layout system for the RequestBin application. It includes utility classes (.clearfix, .hide-text, .input-block-level), responsive grid components (.container, .row, .span1-12, .offset1-12), typography, form elements, and image styling. The file serves as the core stylesheet for creating the application's responsive layout and consistent visual styling across all pages."
+    },
+    "requestbin/static/css/font-awesome-ie7.css": {
+      "hash": "39b85187936b58e2abbbb1cb092fbed61a37844c5fc62a4625c7751a2ebda8c3",
+      "lines": 1204,
+      "size": 41310,
+      "summary": "This is an IE7 compatibility stylesheet for Font Awesome 3.2.1 that provides fallback CSS expressions to render iconic font glyphs in Internet Explorer 7. It defines styling for icon sizing and alignment (`.icon-large`, navigation, button, and link icon styles) and uses IE7-specific `*zoom` expressions with Unicode character codes to inject icon content for classes like `.icon-glass`, `.icon-music`, `.icon-home`, and dozens of other Font Awesome icon classes. The stylesheet ensures that Font Awesome icons display correctly in the legacy IE7 browser that doesn't support modern web font techniques."
+    },
+    "requestbin/static/css/font-awesome-ie7.min.css": {
+      "hash": "a7708968e861410bc255dd2a9c9d04b82303bd6a7e4e1f4d2acbb0488cf318d0",
+      "lines": 385,
+      "size": 37782,
+      "summary": "This is a Font Awesome IE7 compatibility stylesheet that provides fallback support for Internet Explorer 7 by using CSS expressions to inject icon Unicode characters into elements. It defines styling rules for icon sizing and positioning across various containers (navigation, buttons, links) and maps each icon class (like `.icon-glass`, `.icon-heart`, `.icon-star`) to its corresponding Unicode character code. The stylesheet enables the RequestBin application to display Font Awesome icons consistently in older IE browsers that don't support the modern font-based icon rendering approach."
+    },
+    "requestbin/static/css/font-awesome.css": {
+      "hash": "22a22e76f4de930e54dd33af00c71b68828847409e5e79787df5224dd9776c6f",
+      "lines": 1480,
+      "size": 27231,
+      "summary": "This file contains the Font Awesome 3.2.1 icon font stylesheet, which provides the CSS foundation for rendering scalable vector icons throughout the RequestBin application. It defines the `@font-face` declaration to load the FontAwesome web font and establishes styling rules for icon elements using class selectors like `[class^=\"icon-\"]` and `[class*=\" icon-\"]`. The stylesheet includes utility classes for icon sizing (`.icon-2x` through `.icon-5x`), styling (`.icon-muted`, `.icon-light`, `.icon-dark`), layout (`.pull-left`, `.pull-right`), animations (`.icon-spin`), and Bootstrap integration, enabling consistent icon rendering across the RequestBin UI."
+    },
+    "requestbin/static/css/font-awesome.min.css": {
+      "hash": "326b994ec59c7334f52211fbd5aa909a36b98d1717cb798bfcd3af8d4cbdb6ca",
+      "lines": 404,
+      "size": 22084,
+      "summary": "This is a minified CSS stylesheet for Font Awesome v3.2.1 that defines icon styling and rendering through a custom web font. It provides classes like `icon-*` for displaying vector icons, along with utility classes for sizing (`.icon-2x`, `.icon-3x`), styling (`.icon-muted`, `.icon-light`), effects (`.icon-spin`, `.icon-rotate-90`), and layout (`.pull-left`, `.pull-right`). The file enables the RequestBin UI to use Font Awesome icons throughout the interface by mapping semantic CSS classes to Unicode characters rendered from the FontAwesome web font."
+    },
+    "requestbin/static/css/prettify.css": {
+      "hash": "4711aa1d077a1a1dafa8bb5bebf3418fcd5ccdb140ac2d5c55bc6a5587eff08f",
+      "lines": 1,
+      "size": 642,
+      "summary": "This is a stylesheet for Google's Prettify syntax highlighter that defines color schemes for displaying formatted code snippets. It provides CSS classes for styling various code elements like strings (.str), keywords (.kwd), comments (.com), and tags (.tag) with different colors for screen and print media. The file also styles line-numbered lists (ol.linenums and li.L* classes) with alternating background colors for readability, making it essential for rendering syntax-highlighted request/response data in RequestBin's web interface."
+    },
+    "requestbin/static/css/responsive.css": {
+      "hash": "42df90ec3398b4f841dacf13f045d48e3eb1b769c53044793340210a6d9b9a55",
+      "lines": 1089,
+      "size": 21945,
+      "summary": "This file is a Bootstrap v2.3.2 responsive CSS stylesheet that provides responsive grid layout utilities and device-specific visibility classes for the RequestBin web application. It defines a 12-column grid system with span and offset classes (span1-span12, offset1-offset12), fluid row layouts, and responsive breakpoints for desktop, tablet, and phone devices. The stylesheet enables the application to adapt its layout across different screen sizes by toggling visibility and adjusting widths based on media queries for large screens (1200px+), tablets (768-979px), and phones (under 767px)."
+    },
+    "requestbin/static/css/styles.css": {
+      "hash": "d28c96810e82bd911b44e9233a7d29bfc4acd7a6040747259e0af82072037aee",
+      "lines": 614,
+      "size": 10897,
+      "summary": "This CSS stylesheet provides comprehensive styling for RequestBin, a web service for inspecting HTTP requests. It defines styles for core UI components including header navigation (.header-wrap, .nav-menu, .logo), banner sections (.banner-wrap, .banner-header, .banner-subheader), content containers (.content-wrap, .footer-wrap), and API-related elements (.api-badge, .badge-header, .detail-info). The stylesheet also includes extensive button styling (.btn, .btn-primary, .btn-success, .btn-danger, etc.) with hover and active states, plus utility classes for colors, accents, and responsive design patterns that structure the application's visual presentation across desktop and mobile views."
+    },
+    "requestbin/static/js/bootstrap.js": {
+      "hash": "bdad90b135145d1d5a5a2243bfa2bd073ef8fe813e5d26984999188b0e770c6a",
+      "lines": 2280,
+      "size": 61962,
+      "summary": "This file contains Bootstrap v2.3.2 JavaScript components bundled together, including transition detection, alert dismissal, button state management, and carousel functionality. The main classes exported are `Alert`, `Button`, and carousel components, each with jQuery plugin definitions that allow data-attribute-based initialization (e.g., `[data-dismiss=\"alert\"]`, `[data-toggle=\"button\"]`). It provides interactive UI behaviors like closing alerts with fade transitions, toggling button states, and managing carousel navigation through a standardized Bootstrap plugin pattern. This likely serves as the core JavaScript library for interactive components throughout the RequestBin application's frontend interface."
+    },
+    "requestbin/static/js/bootstrap.min.js": {
+      "hash": "b260d056edb6c39eeeed00ffc7bccded9160bb9c1f03c62d77a99181ae88a08b",
+      "lines": 6,
+      "size": 28631,
+      "summary": "This is Bootstrap's minified JavaScript library containing interactive component plugins for jQuery. It provides implementations for Alert, Button, Carousel, Collapse, Dropdown, Modal, Popover, Scrollspy, Tab, and Tooltip components, each with data-API bindings for declarative HTML activation. These plugins enable common UI patterns like dismissible alerts, toggle buttons, image carousels, and collapsible content panels that are fundamental to Bootstrap's front-end framework."
+    },
+    "requestbin/static/js/jquery.min.js": {
+      "hash": "c3a7b608ebfa8d1dfe658bc119e6236a6aaf878a779e7c560aa11dd30881a56a",
+      "lines": 6,
+      "size": 93106,
+      "summary": "This file is the minified version of jQuery 1.10.2, a popular JavaScript library that provides cross-browser DOM manipulation, event handling, and AJAX functionality. The main exports are the jQuery function (aliased as `$` and `x` internally) and its prototype methods like `find()`, `each()`, `ready()`, `ajax()`, and numerous DOM/CSS utilities. It serves as the foundational JavaScript library for the RequestBin project, enabling interactive client-side functionality across the web application."
+    },
+    "requestbin/static/js/prettify.js": {
+      "hash": "e2e576e3bc607cd179ff511947010f645d3441a35313aec0dbd06c4437f83b77",
+      "lines": 29,
+      "size": 13632,
+      "summary": "This file is a minified JavaScript code beautifier and syntax highlighter, specifically Google's Prettify library. It provides functions like `L()` for regex compilation, `M()` for extracting text from DOM nodes, `x()` for language-specific syntax highlighting, `u()` for defining language rules, and `E()` for applying syntax highlighting to code blocks. The library is used in RequestBin to format and colorize code snippets and API request/response data for display in the web interface."
+    },
+    "requestbin/static/less/accordion.less": {
+      "hash": "3a6c3293afe861b75fd205f7c7a22e4e1607a15f63b9b2ef1cec1de2192a15f9",
+      "lines": 35,
+      "size": 636,
+      "summary": "This LESS stylesheet defines the styling for accordion UI components, establishing the visual layout and appearance of collapsible accordion sections. It styles the main container (`.accordion`), individual groups (`.accordion-group`), headings (`.accordion-heading`), toggles (`.accordion-toggle`), and inner content areas (`.accordion-inner`) with borders, padding, border-radius, and cursor properties. The file is part of RequestBin's front-end styling system and provides reusable accordion component styles for the web application's user interface."
+    },
+    "requestbin/static/less/alerts.less": {
+      "hash": "442aaad5a5787ed301f82f86442cc86cf2e7fc74777e7cdb282f7a72fb6d3eea",
+      "lines": 80,
+      "size": 1369,
+      "summary": "This LESS stylesheet defines styling for alert notification components used throughout the RequestBin application. It establishes base alert styles (.alert) with padding, borders, and shadows, along with modifier classes for different alert types (.alert-success, .alert-danger, .alert-error, .alert-info) that apply contextual color variables. The file also includes styles for close buttons within alerts and block-level alert variations (.alert-block) for multi-paragraph content display."
+    },
+    "requestbin/static/less/bootstrap.less": {
+      "hash": "c7032f72e3e96343c48ee3aa782c7171fbfa0809b2d1e6f14e0a905992ad2d2c",
+      "lines": 67,
+      "size": 1533,
+      "summary": "This is the main LESS stylesheet entry point for Bootstrap v2.3.2, which serves as the foundational styling framework for the RequestBin web application. It organizes and imports all Bootstrap component stylesheets in a logical order, from core variables and mixins through CSS resets, grid system, base elements, components, and utility classes, finally allowing custom overrides via a custom.less file. The file essentially orchestrates the compilation of a complete Bootstrap CSS framework by aggregating modular LESS files that define styling for buttons, forms, navigation, modals, and other UI components used throughout RequestBin's interface."
+    },
+    "requestbin/static/less/breadcrumbs.less": {
+      "hash": "a4b1c275aaa81c5f68d6b7402a4a18e108bd3eb3ea8b8834b6fe693c557c1e22",
+      "lines": 25,
+      "size": 431,
+      "summary": "This LESS stylesheet defines the styling for breadcrumb navigation components used in the RequestBin UI. It establishes the visual presentation of `.breadcrumb` containers with padding, background color, and border radius, along with styling for inline list items (`.li`), dividers between breadcrumb segments, and the active breadcrumb state. The file is part of the RequestBin web interface's CSS architecture and contributes to consistent navigation styling across the application."
+    },
+    "requestbin/static/less/button-groups.less": {
+      "hash": "be45864865f9e19dc1e76af12d7cc0a1ca19dda5612e5835521ca43f80f05dbd",
+      "lines": 230,
+      "size": 5709,
+      "summary": "This LESS stylesheet defines styling for button groups in the RequestBin UI, including horizontal and vertical layouts, dropdown toggles, and various button sizes. It establishes styles for `.btn-group`, `.btn-toolbar`, `.btn-group-vertical`, and related dropdown components, with special handling for split button dropdowns and colored button variants. The file uses LESS mixins like `.border-radius()` and `.box-shadow()` to provide cross-browser compatible styling for grouped button interactions and hover/active states. This styling file is part of the larger Bootstrap-based UI framework used throughout the RequestBin project."
+    },
+    "requestbin/static/less/buttons.less": {
+      "hash": "91db1221cfd631d0d991244307d06f63660e2c6d7d937b57d95dabe1b1d1abac",
+      "lines": 229,
+      "size": 4766,
+      "summary": "This LESS stylesheet defines comprehensive button styling for the RequestBin UI, including base `.btn` class with hover, focus, active, and disabled states, along with size variants (`.btn-large`, `.btn-small`, `.btn-mini`) and contextual color classes (`.btn-primary`, `.btn-warning`, `.btn-danger`, `.btn-success`, `.btn-info`, `.btn-inverse`). It also includes specialized styles for block-level buttons, link-styled buttons, and cross-browser compatibility fixes for IE7 and Firefox. The file leverages LESS mixins like `.buttonBackground()`, `.border-radius()`, and `.box-shadow()` to maintain consistency across the button component library used throughout the application."
+    },
+    "requestbin/static/less/carousel.less": {
+      "hash": "540dd5a764bf1e7b5b98e208930e7cc971a63872efb7837912d0cd24c1516c7b",
+      "lines": 159,
+      "size": 2482,
+      "summary": "This LESS stylesheet defines the styling for a Bootstrap-style carousel component used in RequestBin's web interface. It provides comprehensive CSS rules for the main carousel container (`.carousel`, `.carousel-inner`), navigation controls (`.carousel-control`), indicator dots (`.carousel-indicators`), and captions (`.carousel-caption`). The styles handle carousel item positioning, transitions, left/right navigation button styling, and the visual appearance of indicator dots and text overlays for images."
+    },
+    "requestbin/static/less/close.less": {
+      "hash": "345a4eb41e974effdfecb48804bd4e027397580509c74458964251d30a203379",
+      "lines": 32,
+      "size": 644,
+      "summary": "This LESS stylesheet defines styling for close/dismiss icons used throughout the RequestBin UI. The `.close` class creates a floated, bold close button with hover effects and opacity transitions, while the `button.close` variant provides iOS-compatible button element styling. It's a utility component likely used in modals, alerts, and other dismissible UI elements in the RequestBin web interface."
+    },
+    "requestbin/static/less/code.less": {
+      "hash": "a748a96a4a35a619bd338bbb26fb3e5f2040daa8ed3295967e9546c0fffcd9ca",
+      "lines": 61,
+      "size": 1282,
+      "summary": "This LESS stylesheet defines styling for inline and block code elements used throughout the RequestBin application. It styles `code` and `pre` tags with monospace fonts, appropriate padding, colors, and borders, while also providing specialized styles for prettified code blocks (`.prettyprint`) and scrollable code containers (`.pre-scrollable`). The file is part of the project's theming system, using LESS variables like `@baseFontSize` and `@baseLineHeight` to maintain consistent typography across the application."
+    },
+    "requestbin/static/less/component-animations.less": {
+      "hash": "222a43bd3ba05eee180951fb9a61f521a09a9efa282d1cdf376d9f668d63a717",
+      "lines": 23,
+      "size": 306,
+      "summary": "This LESS stylesheet defines reusable animation component classes for fade and collapse effects used throughout the RequestBin UI. It provides `.fade` and `.collapse` classes with smooth transitions using opacity and height properties respectively, with `.in` modifiers to trigger the visible states. These utility animations are likely used for showing/hiding modal dialogs, expandable sections, and other dynamic UI elements in the application."
+    },
+    "requestbin/static/less/custom.less": {
+      "hash": "6843087f1d36d1f060f0537e48df0e81662980d2cae15d990b20d03dd6fb1199",
+      "lines": 312,
+      "size": 9343,
+      "summary": "This LESS stylesheet defines a comprehensive set of design variables for the RequestBin application, establishing the visual language and component styling defaults. It includes color palettes (Runscope brand colors, grayscale, and accent colors), typography settings (@sansFontFamily, @baseFontSize, @baseLineHeight), and sizing variables for components like buttons, forms, and spacing. The variables serve as the single source of truth for the entire application's visual design, enabling consistent styling across UI components like navbars, dropdowns, alerts, and modals through variable reuse and LESS functions like darken() and lighten()."
+    },
+    "requestbin/static/less/dropdowns.less": {
+      "hash": "a8df3b82eb942b5edda533697001a9d83fe79464413a49c6c13e5fe2b7cfd6d3",
+      "lines": 249,
+      "size": 5695,
+      "summary": "This LESS stylesheet defines the styling for dropdown menu components in the RequestBin UI. It includes styles for `.dropdown`, `.dropdown-menu`, `.caret`, and related elements, with support for various states (hover, active, disabled, open) and variations like dropups, submenus, and right-aligned dropdowns. The file uses LESS variables and mixins (such as `@dropdownBackground`, `.border-radius()`, `#gradient > .vertical()`) to maintain consistent theming across the application's dropdown interface elements."
+    },
+    "requestbin/static/less/forms.less": {
+      "hash": "023f8f10a7c940ddd15ccc2cb8df0fae1f1f7bd9f6988001b64296062e9b2959",
+      "lines": 691,
+      "size": 15866,
+      "summary": "This LESS stylesheet defines comprehensive styling for HTML form elements in the RequestBin project, including general form layout, input controls, checkboxes/radios, input sizing, and disabled states. It establishes visual styles and behavior for form elements like inputs, textareas, selects, labels, and legends using variables like `@baseLineHeight`, `@baseFontSize`, and `@inputBorder` for consistent theming. The file provides utility classes such as `.input-mini`, `.input-small`, `.input-large` for sizing inputs and `.radio`, `.checkbox` for properly styled form controls, fitting into the project's broader UI styling system alongside other design components."
+    },
+    "requestbin/static/less/grid.less": {
+      "hash": "3fdea11bcc9299b63ea80b77c061f53e281f3ed5f77b980853d60777ed9c5b87",
+      "lines": 22,
+      "size": 429,
+      "summary": "This LESS stylesheet defines the grid system layout for RequestBin's responsive design, leveraging a `#grid` mixin to generate both fixed-width (940px) and fluid column classes. It sets up core grid spacing using `@gridColumnWidth` and `@gridGutterWidth` variables, along with their fluid equivalents, and includes utility rule overrides for span-based columns to ensure proper hiding and right-alignment behavior. This file is part of the project's CSS preprocessing pipeline and provides the foundational layout system for the web interface."
+    },
+    "requestbin/static/less/hero-unit.less": {
+      "hash": "8ec37ff6146a76b3e06cbc226c7792b614ada810a4ab4e719154b5b1ae81caa3",
+      "lines": 26,
+      "size": 521,
+      "summary": "This LESS stylesheet defines the `.hero-unit` component, a prominent display section commonly used for large introductory content on web pages. It styles the hero unit container with padding, margins, typography properties, and a background color, while also defining nested styles for heading (`h1`) and list item (`li`) elements. The component uses LESS variables like `@heroUnitLeadColor`, `@heroUnitBackground`, and `@baseLineHeight` to maintain design consistency across the RequestBin application. This file is part of the broader styling system that provides reusable UI components for RequestBin's web interface."
+    },
+    "requestbin/static/less/labels-badges.less": {
+      "hash": "9cdf62e5ff662c06ea434b149f1603112e416e2bfb318954a8cb1800fba7a543",
+      "lines": 85,
+      "size": 1884,
+      "summary": "This LESS stylesheet defines styling for label and badge UI components used throughout RequestBin. It establishes base styles for `.label` and `.badge` classes with inline-block display, padding, typography, and text shadows, then extends them with variant styles (`.label-important`, `.label-warning`, `.label-success`, `.label-info`, `.label-inverse`) that apply different background colors. The file also includes hover states for linked labels/badges, responsive positioning adjustments within buttons, and uses LESS variables like `@baseFontSize`, `@white`, and color constants to maintain design consistency across the application."
+    },
+    "requestbin/static/less/layouts.less": {
+      "hash": "dbe386bf32b18dfcf3bf0c9f232e152b2e123af4ec342b52794acb7cb4d147db",
+      "lines": 16,
+      "size": 329,
+      "summary": "This LESS stylesheet defines two fundamental layout container classes used throughout the RequestBin project. It provides `.container` (a fixed-width centered layout using a mixin) and `.container-fluid` (a flexible left-aligned layout with gutters and clearfix), serving as the base grid system classes for responsive page layouts."
+    },
+    "requestbin/static/less/media.less": {
+      "hash": "86ca6f1f3f62e5871cbf6591008066c5dfd07e84c808a7e677f34d3ce825eaaa",
+      "lines": 56,
+      "size": 860,
+      "summary": "This LESS stylesheet defines styling for Bootstrap's media object component, which is a layout pattern for aligning media (images/videos) alongside content. It provides base styles for `.media`, `.media-body`, `.media-object`, and `.media-heading` classes to create flexible, floated layouts with proper spacing and alignment. The file also includes utilities for `.media-list` and directional alignment classes (`.pull-left`, `.pull-right`) to support various content composition patterns commonly used in UI components like comment threads and media galleries."
+    },
+    "requestbin/static/less/mixins.less": {
+      "hash": "75d390bdd03514d27aea30ebd6a84aebc5ba2eacc3e36146c6ad1b33a0ea7b35",
+      "lines": 703,
+      "size": 23042,
+      "summary": "This LESS mixin library provides reusable styling utilities for RequestBin's frontend, including utility mixins like `.clearfix`, `.center-block`, and `.text-overflow`, font management through the `#font` namespace with serif/sans-serif/monospace variants, form styling with `.formFieldState` and `.input-block-level`, and CSS3 property helpers like `.border-radius`, `.box-shadow`, `.transition`, and transformation mixins (`.rotate`, `.scale`, `.translate`, `.skew`, `.translate3d`). It serves as a Bootstrap-inspired foundation for maintaining consistent cross-browser compatible styles across the RequestBin web interface while reducing code duplication."
+    },
+    "requestbin/static/less/modals.less": {
+      "hash": "5e483e73d9c0259baeea618861aec12128a5daa7e5370988f772c3266656f174",
+      "lines": 96,
+      "size": 1978,
+      "summary": "This LESS stylesheet defines the styling for modal dialogs in the RequestBin application, including the backdrop overlay and modal structure. It provides CSS classes for `.modal-backdrop`, `.modal`, `.modal-header`, `.modal-body`, and `.modal-footer` that control the appearance, positioning, animations, and layout of modal windows. The styles include fade-in transitions, shadow effects, responsive button spacing in the footer, and accessibility features like outline removal, integrating with the application's design system through variables like `@zindexModal` and color constants."
+    },
+    "requestbin/static/less/navbar.less": {
+      "hash": "2af2a57dcc6370fbbb7276629d0d108f1e545a51174bb3d9a436e78391a03e71",
+      "lines": 498,
+      "size": 12002,
+      "summary": "This LESS stylesheet defines the styling for the RequestBin navbar component, including base styles for `.navbar` and `.navbar-inner` containers with gradient backgrounds and borders. It covers positioning and styling for navbar elements like `.brand`, `.nav`, dropdown menus, buttons, forms, and search inputs, with support for fixed, static, and responsive layouts. The file extensively uses LESS variables (e.g., `@navbarHeight`, `@navbarLinkColor`) and mixins (e.g., `.clearfix()`, `.border-radius()`) to maintain consistent styling across navbar states like hover, focus, and active."
+    },
+    "requestbin/static/less/navs.less": {
+      "hash": "6a8ebbb333b4cbcb2c1b64676077ced30333064f5a8d80d6d20453803b33f00f",
+      "lines": 410,
+      "size": 8163,
+      "summary": "This LESS stylesheet defines styling for navigation components in the RequestBin UI, including base nav classes (.nav, .nav-list, .nav-header), tabs and pills (.nav-tabs, .nav-pills), and tabbable layouts (.tabbable, .tab-content). It provides comprehensive styling for navigation states (active, hover, disabled), dropdown toggles with carets, and various tab orientations (stacked, below, left, right). The file is part of the project's Bootstrap-based styling framework and ensures consistent navigation UI across the application."
+    },
+    "requestbin/static/less/pager.less": {
+      "hash": "c3c9b7edd7edb9c5f490cf5e6e2cbf31f8ecdfff5a0458dff74ddcf63d04ca4d",
+      "lines": 43,
+      "size": 760,
+      "summary": "This LESS stylesheet defines styling for a pager pagination component used in the RequestBin UI. It creates centered, rounded-button-style navigation controls with `.pager`, `.pager li`, and state-specific selectors for `.next`, `.previous`, and `.disabled` navigation elements. The styles configure inline list items with hover effects, directional floats for next/previous buttons, and disabled state styling using LESS variables like `@baseLineHeight` and `@grayLight`. This component likely provides simple two-way navigation (previous/next) pagination for request history or similar paginated content in the RequestBin interface."
+    },
+    "requestbin/static/less/pagination.less": {
+      "hash": "2427f7d11c5c9f4f0521b27b8df966c9d21cbd77c6c8b27183ab4d80acd35533",
+      "lines": 124,
+      "size": 2678,
+      "summary": "This LESS stylesheet defines styling for pagination components used throughout the RequestBin interface. It provides base pagination styles for `.pagination` containers with customizable states for active, disabled, and hovered items, along with alignment options (centered, right-aligned) and size variants (large, small, mini). The styles include border-radius effects, shadows, and responsive padding/font-size adjustments that integrate with the project's design system variables like `@baseBorderRadius`, `@paginationBackground`, and `@baseLineHeight`."
+    },
+    "requestbin/static/less/popovers.less": {
+      "hash": "a19aeda7848eb1970f12a7215b6ae53c873114c040071a891a33125dd071886a",
+      "lines": 134,
+      "size": 3077,
+      "summary": "This LESS stylesheet defines the styling for popover UI components, including container styles, titles, content areas, and directional arrows. It establishes base styles for `.popover`, `.popover-title`, and `.popover-content` classes with support for positioning popovers in four directions (top, right, bottom, left) using margin offsets. The arrow styling uses CSS border tricks with nested `.arrow` and `.arrow:after` pseudo-elements to create triangular pointers that adjust their position and color based on the popover's direction, integrating with Bootstrap's design system through LESS variables like `@zindexPopover`, `@popoverBackground`, and `@popoverArrowOuterColor`."
+    },
+    "requestbin/static/less/progress-bars.less": {
+      "hash": "06b2ebf1bf6fdda76381eddbfe2bf53d86a8cee79e9abd8aa854d80182189355",
+      "lines": 123,
+      "size": 2858,
+      "summary": "This LESS stylesheet defines styling and animations for progress bars in the RequestBin UI. It includes cross-browser CSS3 keyframe animations for the `progress-bar-stripes` effect that creates an animated striped background pattern, and provides styling for the `.progress` container and `.bar` elements with smooth width transitions. The file also defines color variants for different progress bar states (`.progress-danger`, `.progress-success`, `.progress-info`, `.progress-warning`) using gradient mixins, allowing the application to display visual feedback for various request processing statuses."
+    },
+    "requestbin/static/less/reset.less": {
+      "hash": "b93bf3efe80b081b92825adf81418d858174356042dd741ec47a2e782a2a30e4",
+      "lines": 217,
+      "size": 4201,
+      "summary": "This LESS file provides a CSS reset stylesheet adapted from normalize.css, establishing consistent baseline styles across browsers for the RequestBin web application. It normalizes HTML5 elements (article, aside, figure, etc.), fixes form input inconsistencies, ensures responsive image behavior, and defines print-friendly styles. The file serves as the foundational styling layer that removes browser defaults and ensures cross-browser compatibility before application-specific styles are applied."
+    },
+    "requestbin/static/less/responsive-1200px-min.less": {
+      "hash": "a77ec8b6fd681be86b489094e10524257cf2b3a8ee4ad31c6aebd0e0d673d37f",
+      "lines": 29,
+      "size": 565,
+      "summary": "This LESS stylesheet defines responsive CSS rules for large desktop screens (1200px and above) within a Bootstrap-based grid system. It applies 1200px-specific grid column widths and gutter widths to fixed grids, fluid grids, input grids, and thumbnail layouts by invoking grid mixins. The file is part of a responsive design system that adapts layout spacing and dimensions for different viewport sizes in the RequestBin application."
+    },
+    "requestbin/static/less/responsive-767px-max.less": {
+      "hash": "12af525b8f4b7183cfd11a96f0dc476e226153f10ed0694c8418a79abdf42034",
+      "lines": 194,
+      "size": 3920,
+      "summary": "This LESS stylesheet defines responsive design rules for small screens (devices with max-width of 767px and 480px), adjusting layout, spacing, and component behavior for mobile and landscape phone viewports. It modifies core Bootstrap components including the grid system, navigation bar, forms, modals, and media elements to stack vertically and use full width on smaller screens. The file works in conjunction with Bootstrap's responsive framework to ensure proper display across different device sizes by resetting floats, adjusting margins/padding, and converting multi-column layouts to single-column stacks."
+    },
+    "requestbin/static/less/responsive-768px-979px.less": {
+      "hash": "ebb394489a17de713701c4cbd51b7840e4c2da9dae677745136b4e43a7291982",
+      "lines": 20,
+      "size": 463,
+      "summary": "This LESS stylesheet defines responsive grid layout rules for tablet-sized screens (768-979px viewport width). It applies grid system mixins from a grid module to recalculate column widths and gutters for three grid types: fixed, fluid, and input grids using tablet-specific width variables. This file is part of a responsive design framework that adapts layout properties across different device breakpoints."
+    },
+    "requestbin/static/less/responsive-navbar.less": {
+      "hash": "aaeb04b4f3492e1e33bb96f5280074bfa1cac4fa50b4a98fec9a0c4eb906572d",
+      "lines": 190,
+      "size": 4328,
+      "summary": "This LESS stylesheet defines responsive design rules for a Bootstrap-based navbar that adapts between mobile/tablet and desktop viewports using media queries. It handles the collapsible navbar behavior for smaller screens (tablets and below `@navbarCollapseWidth`), including styling for collapsed navigation, dropdown menus, forms, and buttons, while ensuring the navbar expands properly on desktop devices (`@navbarCollapseDesktopWidth` and above). The file is part of RequestBin's frontend styling system to ensure proper navbar functionality across different device sizes."
+    },
+    "requestbin/static/less/responsive-utilities.less": {
+      "hash": "d15c75c910e4a75bee2cbb80f19f32374c5ba0dd92ea2330f5183c7b1e7bdb4d",
+      "lines": 60,
+      "size": 1602,
+      "summary": "This LESS stylesheet defines responsive visibility utility classes for the RequestBin UI, enabling content to be conditionally shown or hidden across different device sizes and print contexts. It provides classes like `.visible-phone`, `.visible-tablet`, `.hidden-desktop`, and print-specific utilities that leverage CSS media queries to control element display based on viewport width (phones under 767px, tablets 768-979px, and desktops above 979px). The file also includes IE10 Metro viewport configuration and a generic `.hidden` utility class, implementing common responsive web design patterns for progressive enhancement across devices."
+    },
+    "requestbin/static/less/responsive.less": {
+      "hash": "f263a77d491f87845bfaf02ba61bf12b6b0c45bffc0065952d2244b9b8f53978",
+      "lines": 52,
+      "size": 1113,
+      "summary": "This is a master LESS stylesheet that orchestrates responsive design for RequestBin by importing and compiling Bootstrap 2.3.2's responsive framework components. It imports foundational variables and mixins, then pulls in responsive utility classes and media query breakpoints for large desktops (1200px+), tablets (768-979px), and phones (under 767px), along with responsive navbar styling. The file serves as the central compilation point for all responsive CSS that adapts the UI across different device sizes, with a final import for custom overrides."
+    },
+    "requestbin/static/less/scaffolding.less": {
+      "hash": "5ebb256055dfd48512a30b42ba25ff4ce6e633d6247dbe7bae9269066ed1f249",
+      "lines": 54,
+      "size": 885,
+      "summary": "This LESS stylesheet defines foundational scaffolding styles for RequestBin's web interface, establishing base typography, link styling, and image utility classes. It sets global body properties using variables like `@baseFontFamily`, `@baseFontSize`, and `@baseLineHeight`, while providing three reusable image classes (`.img-rounded`, `.img-polaroid`, `.img-circle`) for common image styling patterns. The file uses LESS mixins like `.border-radius()` and `.box-shadow()` to maintain consistency with the project's design system and likely serves as part of a larger Bootstrap-inspired CSS framework for RequestBin's UI."
+    },
+    "requestbin/static/less/sprites.less": {
+      "hash": "0d07c2351ffccdad73ae0e8eac4eab98aede78229a763b4a6935f005c5871bb4",
+      "lines": 198,
+      "size": 10841,
+      "summary": "This LESS stylesheet defines styling for icon sprites used throughout the RequestBin application. It establishes base styles for all icon elements (classes starting with \"icon-\") to display as 14x14px inline-block elements with background images, and provides individual position offsets for over 100 specific icon classes (like .icon-inbox, .icon-search, .icon-download, etc.) that map to coordinates within sprite image files. The file also handles white icon variants for use in active navigation states, dropdowns, and other UI contexts by referencing an alternate sprite image path (@{iconWhiteSpritePath})."
+    },
+    "requestbin/static/less/styles.less": {
+      "hash": "8cbcefe97ec1a0c41e57cd0da1d0804355fb35c227cf90358200c4aa5caf51fc",
+      "lines": 724,
+      "size": 11816,
+      "summary": "This LESS stylesheet defines the visual styling for the RequestBin web application, importing custom variables and establishing comprehensive CSS rules for layout, typography, and components. It includes styles for major page sections like headers (.header-wrap, .banner-wrap), navigation (.nav-menu), content areas (.content-wrap, .footer-wrap), and reusable UI components including API badges (.api-badge, .badge-header, .badge-body) and buttons (.btn, .btn-primary, .btn-success, .btn-warning). The file serves as the primary stylesheet that gives RequestBin its visual design by styling the HTML structure with colors, spacing, and interactive states using LESS variable references like @rsNavy, @grayLight, and @linkColor."
+    },
+    "requestbin/static/less/tables.less": {
+      "hash": "5f0746304e523f30434c3070c1f0fa8156f125748aec0d231a9cb4ff6046a6d2",
+      "lines": 245,
+      "size": 6255,
+      "summary": "This LESS stylesheet defines the styling for HTML tables throughout the RequestBin application, providing base table styles and multiple modifier classes like `.table`, `.table-condensed`, `.table-bordered`, `.table-striped`, and `.table-hover`. It includes responsive column sizing with span classes (span1-span12), zebra-striping for readability, and contextual row coloring for status states (success, error, warning, info). These table styles are foundational UI components used to display request/response data and other tabular information within the RequestBin web interface."
+    },
+    "requestbin/static/less/thumbnails.less": {
+      "hash": "a225b6016a3979d535dfc672edc031fb0ad5b18a08d99ad840ac5b9d313ad0ce",
+      "lines": 54,
+      "size": 1192,
+      "summary": "This LESS stylesheet defines styling for thumbnail galleries in the RequestBin UI, establishing layouts and visual properties for thumbnail containers, individual thumbnail elements, and their hover states. It uses Bootstrap-style classes like `.thumbnails`, `.thumbnail`, and `.caption` to create a grid-based responsive gallery with support for both fluid and fixed row layouts. The styles include clearfix handling, grid gutters, border-radius, box-shadows, and smooth transitions for an interactive thumbnail browsing experience."
+    },
+    "requestbin/static/less/tooltip.less": {
+      "hash": "1ab43d37885fad346de41dafd0a8858602d91db17d72e54e65de41e2e350cd10",
+      "lines": 71,
+      "size": 1684,
+      "summary": "This LESS stylesheet defines the styling for tooltip components used throughout the RequestBin UI. It establishes styles for the base `.tooltip` class with positioning and visibility states, the `.tooltip-inner` wrapper for content, and the `.tooltip-arrow` directional arrows, supporting top, right, bottom, and left tooltip placements. The file relies on LESS variables (like `@zindexTooltip`, `@tooltipColor`, `@tooltipBackground`) and mixins (`.opacity()`, `.border-radius()`) to maintain consistent theming with the rest of the application's stylesheet."
+    },
+    "requestbin/static/less/type.less": {
+      "hash": "5b0d5d2245511f3d41d63db0072756b287fd964dd90154dd2802d7d24fa4e304",
+      "lines": 248,
+      "size": 4857,
+      "summary": "This LESS file defines the typography styling for the RequestBin application, establishing consistent font rendering, sizing, and color schemes across text elements. It styles fundamental text components including paragraphs, headings (h1-h6), lists, blockquotes, and utility classes like `.lead`, `.muted`, and contextual text colors (`.text-warning`, `.text-error`, `.text-info`, `.text-success`). The file uses LESS variables like `@baseFontSize`, `@baseLineHeight`, and color references to maintain a cohesive design system based on Bootstrap conventions. These styles form the foundational typography layer of the application's UI."
+    },
+    "requestbin/static/less/utilities.less": {
+      "hash": "afdcb9099a0cd414f7df16a41bc5841ac36062aa84a196e44730a6829c3ee458",
+      "lines": 31,
+      "size": 335,
+      "summary": "This LESS stylesheet defines a collection of utility CSS classes for common layout and visibility patterns used throughout the RequestBin application. It provides helper classes for floating elements (.pull-right, .pull-left), controlling display properties (.hide, .show), managing visibility (.invisible), and positioning elements as fixed (.affix). These reusable utility classes serve as foundational styling tools that can be applied directly to HTML elements to achieve quick styling without writing custom CSS."
+    },
+    "requestbin/static/less/variables.less": {
+      "hash": "def7c5c97f71450a51edfa96ba378e357420366611d707a683377471d60083b5",
+      "lines": 302,
+      "size": 9142,
+      "summary": "This LESS variables file defines the core design system and theming constants for RequestBin's user interface, including color palettes (grays, accent colors), typography settings (font families, sizes, line heights), component dimensions (padding, border radius), and styling defaults for UI elements like buttons, forms, navbar, tables, and alerts. It serves as a centralized configuration file that allows consistent styling across the application by referencing these variables throughout the LESS stylesheets. The file is based on Bootstrap's variable structure, providing a customizable foundation for the project's visual design."
+    },
+    "requestbin/static/less/wells.less": {
+      "hash": "3fb041192fe9f8d0ffc41b20d5f5e25bfeab77322764fef8272d1ff5030ff553",
+      "lines": 30,
+      "size": 552,
+      "summary": "This LESS stylesheet defines styling for \"well\" components, which are UI containers used to highlight or group content with a distinct visual style. It provides a base `.well` class with padding, background color, borders, and rounded corners, along with `.well-large` and `.well-small` variants for different sizing options. The styles use LESS variables and mixins (like `@wellBackground`, `.border-radius()`, and `.box-shadow()`) that are inherited from the project's design system, making it part of RequestBin's frontend theming infrastructure."
+    },
+    "requestbin/storage/__init__.py": {
+      "hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "lines": 1,
+      "size": 0,
+      "summary": "This file is the `__init__.py` module for the storage package and appears to be empty or serves as a package initializer. It likely allows the storage submodule to be imported as a package within the requestbin project. Additional storage-related classes or functions are probably defined in other files within this directory and imported here if needed."
+    },
+    "requestbin/storage/memory.py": {
+      "hash": "d2f79d56e2d92d7d4b1b734d96b6f1abbf6f49c9ffd7782704828e0aae13bf7c",
+      "lines": 47,
+      "size": 1118,
+      "summary": "MemoryStorage is an in-memory implementation of the storage backend for RequestBin that manages bins (request collection containers) and their associated HTTP requests. The class provides core storage operations including `create_bin()`, `create_request()`, `lookup_bin()`, and bin/request counting, while automatically expiring old bins based on a configurable TTL through the `_expire_bins()` method. It serves as a lightweight storage option for the RequestBin application, storing all data in a dictionary-based structure that persists only for the lifetime of the process."
+    },
+    "requestbin/storage/redis.py": {
+      "hash": "7331a55a270a7c4b2f4cb4998b94102ea103917d24b0defff3167e9ac82ddcff",
+      "lines": 66,
+      "size": 1799,
+      "summary": "This module implements Redis-based persistence for RequestBin, a service that captures HTTP requests. The `RedisStorage` class manages creating and retrieving request bins (temporary containers for capturing requests) with automatic expiration, storing serialized `Bin` objects in Redis with TTL-based cleanup. It provides methods to create bins and requests, track statistics (bin count, request count, average request size), and retrieve bins by name, handling data integrity by deleting corrupted entries. This storage backend allows RequestBin to scale horizontally by persisting request data in Redis rather than in-memory."
+    },
+    "requestbin/templates/bin.html": {
+      "hash": "7ad83446eaba928150e93c10101f8f992f944a27bbbdaece4deed0fcdb091700",
+      "lines": 191,
+      "size": 6440,
+      "summary": "This Jinja2 template renders the main view for a RequestBin, displaying captured HTTP requests and providing instructions for making requests. It extends a base layout and conditionally shows either a list of captured requests (with the `message_detail` macro displaying headers, form data, and raw body) or an empty-bin welcome screen with code examples in multiple languages (cURL, Python, Node.js, Ruby, C#, Java, PHP). The template includes information about bin limits, privacy status, and links to upgrade via Runscope."
+    },
+    "requestbin/templates/doc.html": {
+      "hash": "3889b23223393517327ff6b8f1df6fe4b749667ef04ca464ccd07eb07a5a1921",
+      "lines": 13,
+      "size": 262,
+      "summary": "This Jinja2 template file renders documentation pages by extending the base layout and displaying a dynamically provided title and content. It includes CSS styling to enlarge paragraph text within the content area and safely renders HTML content passed from the backend. The template serves as a generic documentation page renderer, likely used for displaying API docs, guides, or help information within the RequestBin application."
+    },
+    "requestbin/templates/home.html": {
+      "hash": "dbc5e70d86fddd9aa829c40e461cbf16f0dd480033769990149e70f489d101e4",
+      "lines": 31,
+      "size": 1169,
+      "summary": "This is the home/landing page template for RequestBin that extends the base layout.html. It provides marketing copy explaining RequestBin's purpose (inspecting HTTP requests) and features a prominent \"Create a RequestBin\" button that triggers the `createBin()` JavaScript function. The createBin() function makes a POST request to `/api/v1/bins` to generate a new bin (optionally marked as private), then redirects to the new bin's inspection page. This template serves as the entry point for users to begin using the RequestBin service."
+    },
+    "requestbin/templates/layout.html": {
+      "hash": "82aa37af5805dd31f23b1b6ca11625a02584f194b1e46413a0faf4bbeae67371",
+      "lines": 82,
+      "size": 2843,
+      "summary": "This is the main HTML layout template for RequestBin, a web service for collecting and inspecting HTTP requests. It provides the base structure with a header containing the RequestBin logo and navigation, a content area with optional sidebar for recent request bins history, and a footer. The template uses Jinja2 templating blocks (title, content, binurl, sidebar, script) to allow child templates to override specific sections while maintaining consistent styling with Bootstrap, Font Awesome icons, and custom CSS."
+    },
+    "requestbin/util.py": {
+      "hash": "66fb4386a64b054356b0493b49a9285d5cc7bfc7f880e6d18d5712a57ee2ae47",
+      "lines": 26,
+      "size": 818,
+      "summary": "This utility module provides helper functions for RequestBin's UI and ID generation needs. Key functions include `random_color()` and `solid16x16gif_datauri()` for generating colored GIF data URIs (likely for visual request bins), `tinyid()` for creating short unique identifiers, and `baseN()` for base conversion. These utilities support the broader project's need to visually distinguish request bins and generate compact identifiers for URLs."
+    },
+    "requestbin/views.py": {
+      "hash": "31e84fc71bfd6b0b63e4920f664073907bd9d259361bf96c29d4a9abbd1a0abd",
+      "lines": 68,
+      "size": 1948,
+      "summary": "This Flask views module handles the core routing and request handling for a RequestBin application, which appears to be a service for capturing and inspecting HTTP requests. The main endpoints are `home()` which displays recent bins, `bin(name)` which either captures incoming requests to a bin or displays its inspection interface if the 'inspect' parameter is present, and `docs(name)` which renders documentation pages. Helper functions `update_recent_bins()` and `expand_recent_bins()` manage a session-based history of recently accessed bins, with privacy controls enforced via secret keys for private bins."
+    },
+    "setup.py": {
+      "hash": "4705e1bd8450c7f5cbb3bd627e1da7cd9865a3f01080e5949bed5446a354df06",
+      "lines": 15,
+      "size": 339,
+      "summary": "This is the package configuration file for RequestBin, an HTTP request collector and inspector tool version 2.0.0 by Runscope. It uses setuptools to define the package metadata, dependencies (feedparser), and auto-discovers all Python packages in the project. The setup.py enables installation and distribution of the RequestBin application as a Python package."
+    },
+    "web.py": {
+      "hash": "0e0f6dd0960ce8a1249e590f023879ed1fee0d36ca75b94a4ca7dbcef4c5b9a0",
+      "lines": 8,
+      "size": 213,
+      "summary": "This is the entry point script for the RequestBin web application that starts the Flask server with configurable port and debug settings. It imports the Flask app instance from the requestbin package and reads the PORT environment variable (defaulting to config.PORT_NUMBER) to determine which port to bind to. The script enables the application to run locally or in production environments by listening on all network interfaces (0.0.0.0) with optional debug mode controlled via configuration."
+    }
+  },
+  "generated_at": "2026-07-01T19:05:19Z",
+  "model": "claude-haiku-4-5-20251001",
+  "root": "/Users/scott/Developer/Code/requestbin",
+  "stats": {
+    "cached": 0,
+    "fresh": 78,
+    "removed": 0,
+    "total": 78
+  },
+  "version": 1
+}
